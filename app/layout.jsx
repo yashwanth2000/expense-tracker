@@ -2,6 +2,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import RootProviders from "../components/providers/RootProviders.jsx";
+import { Toaster } from "@/components/ui/sonner";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -12,12 +13,13 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-      <ClerkProvider>
-        <html lang="en" className="dark" style={{ colorScheme: "dark" }}>
-          <body className={inter.className}>
-            <RootProviders>{children}</RootProviders>
-          </body>
-        </html>
-      </ClerkProvider>
+    <ClerkProvider>
+      <html lang="en" className="dark" style={{ colorScheme: "dark" }}>
+        <body className={inter.className}>
+          <Toaster richColors position="bottom-right" />
+          <RootProviders>{children}</RootProviders>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
