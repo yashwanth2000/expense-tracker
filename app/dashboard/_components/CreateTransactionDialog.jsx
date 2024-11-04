@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import PropTypes from "prop-types";
 import {
   Dialog,
@@ -32,8 +32,14 @@ import { CalendarIcon, Loader2 } from "lucide-react";
 import { PopoverContent } from "@radix-ui/react-popover";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
+import { CreateTransaction } from "../_actions/transaction";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
+import { DateToUTCDate } from "@/lib/helpers";
+import { toast } from "sonner";
 
 function CreateTransactionDialog({ type, trigger }) {
+  const [open, setOpen] = useState(false);
+
   const form = useForm({
     resolver: zodResolver(CreateTransactionSchema),
     defaultValues: {
@@ -49,8 +55,63 @@ function CreateTransactionDialog({ type, trigger }) {
     [form]
   );
 
+  const queryClient = useQueryClient();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: CreateTransaction,
+    onSuccess: () => {
+      console.log("Success handler called:");
+
+      toast.dismiss("create-transaction-loading");
+
+      toast.success("Transaction created successfully 🎉", {
+        id: "create-transaction-success",
+        duration: 1000,
+      });
+
+      // After creating a transaction,we need to invalidate the overview query which will refetch data in the homepage
+      queryClient.invalidateQueries({
+        queryKey: ["overview"],
+      });
+
+      form.reset({
+        type,
+        description: "",
+        amount: 0,
+        category: undefined,
+        date: new Date(),
+      });
+
+      setOpen(false);
+    },
+    onError: (error) => {
+      console.log("Error handler called:", error);
+      toast.dismiss("create-transaction-loading");
+
+      toast.error("Failed to create transaction", {
+        id: "create-transaction-error",
+        duration: 1000,
+      });
+    },
+  });
+
+  const onSubmit = useCallback(
+    (values) => {
+      toast.loading("Creating transaction...", {
+        id: "create-transaction-loading",
+        duration: 1000,
+      });
+
+      mutate({
+        ...values,
+        date: DateToUTCDate(values.date),
+      });
+    },
+    [mutate]
+  );
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -71,7 +132,7 @@ function CreateTransactionDialog({ type, trigger }) {
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form className="space-y-4">
+          <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
             <FormField
               control={form.control}
               name="description"
@@ -166,7 +227,11 @@ function CreateTransactionDialog({ type, trigger }) {
                         <Calendar
                           mode="single"
                           selected={field.value}
-                          onSelect={field.onChange}
+                          onSelect={(value) => {
+                            if (!value) return;
+                            // console.log("Selected Date", value);
+                            field.onChange(value);
+                          }}
                           initialFocus
                           className={
                             "rounded-md border light:bg-white dark:bg-black"
@@ -193,10 +258,10 @@ function CreateTransactionDialog({ type, trigger }) {
               Cancel
             </Button>
           </DialogClose>
-          {/* <Button onClick={form.handleSubmit(onSubmit)} disabled={isPending}>
+          <Button onClick={form.handleSubmit(onSubmit)} disabled={isPending}>
             {!isPending && "Create"}
             {isPending && <Loader2 className="animate-spin" />}
-          </Button> */}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

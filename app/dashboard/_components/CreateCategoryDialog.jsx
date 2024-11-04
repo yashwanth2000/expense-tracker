@@ -62,6 +62,7 @@ function CreateCategoryDialog({ type, successCallback }) {
       // Show success toast immediately
       toast.success(`Category ${data.name} created successfully 🎉`, {
         id: "create-category-success",
+        duration: 1000,
       });
 
       // Then handle the state updates
@@ -81,6 +82,7 @@ function CreateCategoryDialog({ type, successCallback }) {
 
       toast.error("Failed to create category", {
         id: "create-category-error",
+        duration: 1000,
       });
     },
   });
@@ -89,6 +91,7 @@ function CreateCategoryDialog({ type, successCallback }) {
     (values) => {
       toast.loading("Creating category...", {
         id: "create-category",
+        duration: 1000,
       });
       mutate(values);
     },

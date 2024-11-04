@@ -1,4 +1,3 @@
-// models/MonthHistory.js
 import mongoose from "mongoose";
 
 const MonthHistorySchema = new mongoose.Schema({
