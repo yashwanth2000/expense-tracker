@@ -34,8 +34,10 @@ export function CurrencyComboBox() {
     queryKey: ["user-settings"],
     queryFn: async () => {
       const response = await fetch("/api/user-settings");
-      const data = await response.json();
-      return data;
+      if (!response.ok) {
+        throw new Error("Failed to fetch user settings");
+      }
+      return response.json();
     },
   });
 

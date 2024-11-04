@@ -3,7 +3,7 @@
 import { updateUserCurrencySchema } from "@/schema/userSettings";
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { UserSettings } from "@/models/UserSettings";
+import { UserSettings } from "@/models/UserSettingsModel";
 
 export async function updateUserCurrency(currency) {
   const parsedBody = updateUserCurrencySchema.safeParse({

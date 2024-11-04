@@ -1,5 +1,5 @@
 import connectDB from "@/lib/mongodb";
-import { UserSettings } from "@/models/UserSettings";
+import { UserSettings } from "@/models/UserSettingsModel";
 import { currentUser } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
