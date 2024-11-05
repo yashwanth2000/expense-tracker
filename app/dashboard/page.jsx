@@ -5,6 +5,7 @@ import { UserSettings } from "@/models/UserSettingsModel";
 import { Button } from "@/components/ui/button";
 import CreateTransactionDialog from "@/app/dashboard/_components/CreateTransactionDialog";
 import connectDB from "@/lib/mongodb";
+import Overview from "@/app/dashboard/_components/Overview";
 
 async function page() {
   await connectDB();
@@ -14,12 +15,18 @@ async function page() {
     redirect("/sign-in");
   }
 
-  const userSettings = await UserSettings.findOne({ userId: user.id });
-  // console.log(userSettings);
+  const userSettings = await UserSettings.findOne({ userId: user.id }).lean();
 
   if (userSettings === null) {
     redirect("/wizard");
   }
+
+  // Convert the Mongoose document to a plain object with serialized values
+  const serializedSettings = {
+    ...userSettings,
+    _id: userSettings._id.toString(),
+    createdAt: userSettings.createdAt.toISOString(),
+  };
 
   return (
     <div className="h-full bg-background">
@@ -54,6 +61,7 @@ async function page() {
           </div>
         </div>
       </div>
+      <Overview userSettings={serializedSettings} />
     </div>
   );
 }

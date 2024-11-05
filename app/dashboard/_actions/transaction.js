@@ -58,7 +58,7 @@ export async function CreateTransaction(form) {
       {
         userId: user.id,
         day: date.getUTCDate(),
-        month: date.getUTCMonth(),
+        month: date.getUTCMonth() + 1,
         year: date.getUTCFullYear(),
       },
       {
@@ -74,7 +74,7 @@ export async function CreateTransaction(form) {
     await YearHistory.findOneAndUpdate(
       {
         userId: user.id,
-        month: date.getUTCMonth(),
+        month: date.getUTCMonth() + 1,
         year: date.getUTCFullYear(),
       },
       {
