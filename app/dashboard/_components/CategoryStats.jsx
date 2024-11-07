@@ -4,7 +4,7 @@ import React, { useMemo } from "react";
 import PropTypes from "prop-types";
 import { useQuery } from "@tanstack/react-query";
 import { DateToUTCDate } from "@/lib/helpers";
-import { GetFormattedStats } from "@/lib/helpers";
+import { GetFormatterForCurrency } from "@/lib/helpers";
 import SkeletonWrapper from "@/components/SkeletonWrapper";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -29,7 +29,7 @@ function CategoryStats({ userSettings, from, to }) {
   });
 
   const formatter = useMemo(() => {
-    return GetFormattedStats(userSettings.currency);
+    return GetFormatterForCurrency(userSettings.currency);
   }, [userSettings.currency]);
 
   return (
@@ -88,9 +88,17 @@ function CategoriesCard({ formatter, type, data }) {
             <div className="flex flex-col gap-4 p-4 w-full">
               {filteredData.map((item) => {
                 const amount = item.totalAmount || 0;
+
+                // Calculate the percentage of this amount relative to the total
+                // - For income items, total = total income, so it calculates % of income source.
+                // - For expense items, total = total expense, so it calculates % of expense category.
                 const percentage = (amount * 100) / (total || amount);
+
                 return (
-                  <div className="flex flex-col gap=2" key={item.category}>
+                  <div
+                    className="flex flex-col gap=2"
+                    key={`${item._id.category}-${type}`}
+                  >
                     <div className="flex items-center justify-between">
                       <span className="flex items-center text-gray-400">
                         {item._id.categoryIcon}

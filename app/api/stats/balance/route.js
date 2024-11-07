@@ -52,7 +52,7 @@ async function getBalanceStats(userId, from, to) {
   ]);
 
   return {
-    expense: totals.find((t) => t._id === "expense")?.totalAmount || 0, // Total expenses
-    income: totals.find((t) => t._id === "income")?.totalAmount || 0, // Total income
+    expense: totals.find((t) => t._id === "expense")?.totalAmount || 0,
+    income: totals.find((t) => t._id === "income")?.totalAmount || 0, 
   };
 }

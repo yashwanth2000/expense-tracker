@@ -3,7 +3,7 @@
 import React, { useCallback, useMemo } from "react";
 import { DateToUTCDate } from "@/lib/helpers";
 import { useQuery } from "@tanstack/react-query";
-import { GetFormattedStats } from "@/lib/helpers";
+import { GetFormatterForCurrency } from "@/lib/helpers";
 import SkeletonWrapper from "@/components/SkeletonWrapper";
 import { TrendingDown, TrendingUp, Wallet } from "lucide-react";
 import { Card } from "@/components/ui/card";
@@ -27,7 +27,7 @@ function StatsCards({ userSettings, from, to }) {
   });
 
   const formattedStats = useMemo(() => {
-    return GetFormattedStats(userSettings.currency);
+    return GetFormatterForCurrency(userSettings.currency);
   }, [userSettings.currency]);
 
   const income = statsQuery.data?.income || 0;

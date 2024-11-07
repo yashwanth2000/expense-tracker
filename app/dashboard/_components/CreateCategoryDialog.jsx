@@ -39,7 +39,7 @@ import { toast } from "sonner";
 import { CreateCategory } from "../_actions/categories";
 import { useTheme } from "next-themes";
 
-function CreateCategoryDialog({ type, successCallback }) {
+function CreateCategoryDialog({ type, successCallback, trigger }) {
   const [open, setOpen] = useState(false);
   const [popoverOpen, setPopoverOpen] = useState(false);
   const form = useForm({
@@ -101,13 +101,17 @@ function CreateCategoryDialog({ type, successCallback }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button
-          variant="outline"
-          className="flex border-separate items-center justify-start rounded-none border-b px-3 py-3 text-muted-foreground"
-        >
-          <PlusSquareIcon className="mr-2 h-4 w-4" />
-          Create new
-        </Button>
+        {trigger ? (
+          trigger
+        ) : (
+          <Button
+            variant="outline"
+            className="flex border-separate items-center justify-start rounded-none border-b px-3 py-3 text-muted-foreground"
+          >
+            <PlusSquareIcon className="mr-2 h-4 w-4" />
+            Create new
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

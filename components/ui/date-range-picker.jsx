@@ -514,14 +514,10 @@ export const DateRangePicker = ({
           </Button>
           <Button
             onClick={() => {
-              // console.log("Update clicked, current range:", range);
-
               if (range.from && range.to) {
                 const dayDifference = differenceInDays(range.to, range.from);
-                // console.log("Day difference on update:", dayDifference); 
 
                 if (dayDifference > MAX_DATE_RANGE_DAYS) {
-                  // console.log("Should show toast error"); 
                   toast.error(
                     `The selected range exceeds the maximum of ${MAX_DATE_RANGE_DAYS} days`,
                     {
@@ -537,7 +533,6 @@ export const DateRangePicker = ({
                 !areRangesEqual(range, openedRangeRef.current) ||
                 !areRangesEqual(rangeCompare, openedRangeCompareRef.current)
               ) {
-                // console.log("Calling onUpdate with range:", range);
                 onUpdate?.({ range, rangeCompare });
               }
             }}

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import CreateTransactionDialog from "@/app/dashboard/_components/CreateTransactionDialog";
 import connectDB from "@/lib/mongodb";
 import Overview from "@/app/dashboard/_components/Overview";
+import History from "@/app/dashboard/_components/History";
 
 async function page() {
   await connectDB();
@@ -62,6 +63,7 @@ async function page() {
         </div>
       </div>
       <Overview userSettings={serializedSettings} />
+      <History userSettings={serializedSettings} />
     </div>
   );
 }

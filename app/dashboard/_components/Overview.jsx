@@ -24,21 +24,6 @@ function Overview({ userSettings }) {
             showCompare={false}
             onUpdate={({ range }) => {
               const { from, to } = range;
-              // console.log("onUpdate called with:", { from, to }); // Add this log
-
-              if (!from || !to) return;
-
-              const dayDifference = differenceInDays(to, from);
-              console.log("Day difference:", dayDifference); // Add this log
-
-              if (dayDifference > MAX_DATE_RANGE_DAYS) {
-                // console.log("Attempting to show error toast"); // Add this log
-                toast.error(
-                  `The selected range is too large. Max date range is ${MAX_DATE_RANGE_DAYS} days`
-                );
-                return;
-              }
-
               setDateRange({ from, to });
             }}
           />
