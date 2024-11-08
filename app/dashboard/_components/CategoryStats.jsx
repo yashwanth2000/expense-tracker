@@ -99,8 +99,8 @@ function CategoriesCard({ formatter, type, data }) {
                     className="flex flex-col gap=2"
                     key={`${item._id.category}-${type}`}
                   >
-                    <div className="flex items-center justify-between">
-                      <span className="flex items-center text-gray-400">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="flex items-center text-gray-400 ">
                         {item._id.categoryIcon}
                         {item._id.category}
                         <span className="ml-2 text-xs text-muted-foreground">
@@ -118,6 +118,7 @@ function CategoriesCard({ formatter, type, data }) {
                       indicator={
                         type === "income" ? "bg-emerald-500" : "bg-red-500"
                       }
+                      className="h-1 w-full"
                     />
                   </div>
                 );

@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import DeleteCategoryDialog from "@/app/manage/_components/DeleteCategoryDialog";
+import DeleteAccountDialog from "@/app/manage/_components/DeleteAccountDialog";
 
 function page() {
   return (
@@ -47,6 +48,24 @@ function page() {
         </Card>
         <CategoryList type="income" />
         <CategoryList type="expense" />
+      </div>
+
+      <div className="border-t pt-4">
+        <h2 className="text-xl font-semibold">Danger Zone</h2>
+        <p className="text-muted-foreground mb-2">
+          Delete your account and all associated data.
+        </p>
+        <DeleteAccountDialog
+          trigger={
+            <Button
+              variant="destructive"
+              className="inline-flex items-center px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-md transition-all duration-300 ease-in-out transform hover:bg-red-700 hover:scale-105 hover:border-2 hover:border-red-800"
+            >
+              <TrashIcon className="h-5 w-5 mr-2" />
+              Delete Account
+            </Button>
+          }
+        />
       </div>
     </>
   );
@@ -109,7 +128,7 @@ function CategoryList({ type }) {
                   type === "expense" ? "text-red-500" : "text-emerald-500"
                 )}
               >
-                {type}
+                {type === "expense" ? "Expenses" : "Incomes"}
               </span>{" "}
               categories yet
             </p>
@@ -133,22 +152,23 @@ function CategoryList({ type }) {
 
 function CategoryCard({ category }) {
   return (
-    <div className="flex border-separate flex-col justify-between rounded-md border shadow-md shadow-black/[0.1] dark:shadow-white/[0.1]">
-      <div className="flex flex-col gap-2 p-4 items-center">
+    <div className="flex justify-between items-center rounded-md border shadow-md shadow-black/[0.1] dark:shadow-white/[0.1] p-4">
+      <div className="flex items-center gap-4">
         <span role="img" className="text-3xl">
           {category.icon}
         </span>
-        <span>{category.name}</span>
+        <span className="text-lg">{category.name}</span>
       </div>
+
       <DeleteCategoryDialog
         category={category}
         trigger={
           <Button
-            className="flex w-full border-separate items-center gap-2 rounded-t-none text-muted-foreground hover:bg-red-500/20"
-            variant={"secondary"}
+            variant="destructive"
+            className="inline-flex items-center px-4 py-2 bg-transparent text-red-600 text-sm font-medium rounded-md transition-all duration-300 ease-in-out hover:bg-red-600 hover:text-white"
           >
-            <TrashIcon className="h-4 w-4" />
-            Remove
+            <TrashIcon className="h-5 w-5" />
+            Delete
           </Button>
         }
       />

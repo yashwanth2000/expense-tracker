@@ -9,7 +9,7 @@ import { YearHistory } from "@/models/YearHistoryModel";
 // Validation Schema
 const getHistoryDataSchema = z.object({
   timeFrame: z.enum(["year", "month"]),
-  month: z.coerce.number().min(0).max(11).default(0),
+  month: z.coerce.number().min(1).max(12).default(1),
   year: z.coerce.number().min(2000).max(3000),
 });
 
@@ -77,8 +77,25 @@ async function getYearHistoryData(userId, year) {
     { $sort: { _id: 1 } },
   ]);
 
-  //   console.log(result);
-  return result.length > 0 ? result : [];
+  // Create an array with all months
+  const completeYearData = [];
+  for (let month = 1; month <= 12; month++) {
+    const monthData = result.find((item) => item._id === month) || {
+      _id: month,
+      expense: 0,
+      income: 0,
+    };
+
+    completeYearData.push({
+      _id: month,
+      year,
+      month: month - 1,
+      expense: monthData.expense || 0,
+      income: monthData.income || 0,
+    });
+  }
+
+  return completeYearData;
 }
 
 async function getMonthHistoryData(userId, year, month) {
@@ -97,13 +114,14 @@ async function getMonthHistoryData(userId, year, month) {
   if (result.length === 0) return [];
 
   const history = [];
-  const daysInMonth = getDaysInMonth(new Date(year, month));
+  const daysInMonth = getDaysInMonth(new Date(year, month - 1));
 
   for (let i = 1; i <= daysInMonth; i++) {
     const dayData = result.find((row) => row._id === i);
     history.push({
+      _id: i,
       year,
-      month,
+      month: month - 1,
       day: i,
       expense: dayData ? dayData.expense : 0,
       income: dayData ? dayData.income : 0,

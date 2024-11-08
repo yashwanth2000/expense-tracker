@@ -95,7 +95,7 @@ function YearSelector({ period, setPeriod, years }) {
 function MonthSelector({ period, setPeriod }) {
   return (
     <Select
-      value={period.month.toString()} // No need to adjust here since `period.month` already uses 1-12
+      value={period.month.toString()} 
       onValueChange={(value) => {
         setPeriod({
           year: period.year,

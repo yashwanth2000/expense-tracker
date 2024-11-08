@@ -35,14 +35,6 @@ function History({ userSettings }) {
     queryKey: ["overview", "history", timeFrame, period],
 
     queryFn: async () => {
-      console.log(
-        "timeFrame:",
-        timeFrame,
-        "year:",
-        period.year,
-        "month:",
-        period.month
-      );
       const response = await fetch(
         `/api/history-data?timeFrame=${timeFrame}&year=${period.year}&month=${period.month}`
       );
@@ -82,7 +74,7 @@ function History({ userSettings }) {
                 variant={"outline"}
                 className="flex items-center gap-2 text-sm"
               >
-                <div className="h-4 w-4 rounded-full bg-rose-500"></div>
+                <div className="h-4 w-4 rounded-full bg-red-500"></div>
                 Expense
               </Badge>
             </div>
@@ -95,10 +87,10 @@ function History({ userSettings }) {
                 <BarChart
                   height={300}
                   data={historyDataQuery.data}
-                  barCategoryGap={6}
+                  barCategoryGap={5}
                 >
                   <defs>
-                    <linearGradient id="incomeBar" x1="0" y1="0" x2="0" y2="0">
+                    <linearGradient id="incomeBar" x1="0" y1="0" x2="0" y2="1">
                       <stop
                         offset={"0"}
                         stopColor="#10b981"
@@ -111,7 +103,7 @@ function History({ userSettings }) {
                       />
                     </linearGradient>
 
-                    <linearGradient id="expenseBar" x1="0" y1="0" x2="0" y2="0">
+                    <linearGradient id="expenseBar" x1="0" y1="0" x2="0" y2="1">
                       <stop
                         offset={"0"}
                         stopColor="#ef4444"
@@ -126,7 +118,7 @@ function History({ userSettings }) {
                   </defs>
                   <CartesianGrid
                     strokeDasharray="5 5"
-                    strokeOpacity="0.2"
+                    strokeOpacity={"0.2"}
                     vertical={false}
                   />
                   <XAxis
@@ -136,17 +128,28 @@ function History({ userSettings }) {
                     axisLine={false}
                     padding={{ left: 5, right: 5 }}
                     dataKey={(data) => {
-                      console.log(data);
-                      const { year, month, day } = data;
-                      const date = new Date(year, month, day || 1);
-                      if (timeFrame === "year") {
-                        return date.toLocaleDateString("default", {
-                          month: "long",
-                        });
+                      try {
+                        if (timeFrame === "year") {
+                          // For year view, just format the month name
+                          const date = new Date(data.year, data.month);
+                          return date.toLocaleDateString("default", {
+                            month: "long",
+                          });
+                        } else {
+                          // For month view, format the day
+                          const date = new Date(
+                            data.year,
+                            data.month,
+                            data.day
+                          );
+                          return date.toLocaleDateString("default", {
+                            day: "numeric",
+                          });
+                        }
+                      } catch (error) {
+                        console.error("Date formatting error:", error, data);
+                        return "Invalid Date";
                       }
-                      return date.toLocaleDateString("default", {
-                        day: "2-digit",
-                      });
                     }}
                   />
                   <YAxis
@@ -171,9 +174,9 @@ function History({ userSettings }) {
                   />
                   <Tooltip
                     cursor={{ opacity: 0.1 }}
-                    content={(props) => {
-                      <CustomTooltip formatter={formatter} {...props} />;
-                    }}
+                    content={(props) => (
+                      <CustomTooltip formatter={formatter} {...props} />
+                    )}
                   />
                 </BarChart>
               </ResponsiveContainer>
@@ -204,6 +207,7 @@ function CustomTooltip({ active, payload, formatter }) {
 
   const data = payload[0].payload;
   const { income, expense } = data;
+
   return (
     <div className="min w-[300px] rounded border bg-background p-4">
       <TooltipRow
@@ -217,7 +221,7 @@ function CustomTooltip({ active, payload, formatter }) {
       <TooltipRow
         formatter={formatter}
         label="Income"
-        value={expense}
+        value={income}
         bgColor="bg-emerald-500"
         textColor="text-emerald-500"
       />

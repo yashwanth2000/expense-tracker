@@ -60,8 +60,6 @@ function CreateTransactionDialog({ type, trigger }) {
   const { mutate, isPending } = useMutation({
     mutationFn: CreateTransaction,
     onSuccess: () => {
-      console.log("Success handler called:");
-
       toast.dismiss("create-transaction-loading");
 
       toast.success("Transaction created successfully 🎉", {
@@ -85,7 +83,6 @@ function CreateTransactionDialog({ type, trigger }) {
       setOpen(false);
     },
     onError: (error) => {
-      console.log("Error handler called:", error);
       toast.dismiss("create-transaction-loading");
 
       toast.error("Failed to create transaction", {
@@ -141,7 +138,6 @@ function CreateTransactionDialog({ type, trigger }) {
                   <FormLabel>Description</FormLabel>
                   <FormControl>
                     <Input
-                      // defaultValue={""}
                       {...field}
                       placeholder={
                         type === "income"
@@ -166,7 +162,6 @@ function CreateTransactionDialog({ type, trigger }) {
                   <FormLabel>Amount</FormLabel>
                   <FormControl>
                     <Input
-                      // defaultValue={0}
                       type="number"
                       {...field}
                       placeholder="0.00"
